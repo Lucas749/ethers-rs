@@ -1,0 +1,221 @@
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+name: Tests
+
+# Yeah I know it's bad practice to have API keys, this is a read-only API key
+# so that we do not get rate limited by Etherscan (and it's free to generate as
+# many as you want)
+env:
+  ETHERSCAN_API_KEY: I5BXNZYP5GEDWFINGVEZKYIVU2695NPQZB
+  RINKEBY_PRIVATE_KEY: "a046a5b763923d437855a6fe64962569c9a378efba5c84920212c4b6ae270df5"
+
+jobs:
+  tests:
+    name: ethereum tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Install ganache-cli
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - name: Install ganache
+        run: npm install -g ganache-cli
+      - name: Install Solc
+        run: |
+            mkdir -p "$HOME/bin"
+            wget -q https://github.com/ethereum/solidity/releases/download/v0.6.6/solc-static-linux -O $HOME/bin/solc
+            chmod u+x "$HOME/bin/solc"
+            export PATH=$HOME/bin:$PATH
+            solc --version
+
+      - name: Install geth
+        run: |
+            mkdir -p "$HOME/bin"
+            wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.9.23-8c2f2715.tar.gz
+            tar -xvf geth-linux-amd64-1.9.23-8c2f2715.tar.gz
+            mv geth-linux-amd64-1.9.23-8c2f2715/geth $HOME/bin/geth
+            chmod u+x "$HOME/bin/geth"
+            export PATH=$HOME/bin:$PATH
+            geth version
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v1
+        with:
+          cache-on-failure: true
+      - name: cargo test
+        run: |
+            export PATH=$HOME/bin:$PATH
+            cargo test
+
+  feature-tests:
+    name: celo tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Install ganache-cli
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      # TODO: can we combine these shared steps in github actions?
+      - name: Install ganache
+        run: npm install -g ganache-cli
+      - name: Install Solc
+        run: |
+            mkdir -p "$HOME/bin"
+            wget -q https://github.com/ethereum/solidity/releases/download/v0.6.6/solc-static-linux -O $HOME/bin/solc
+            chmod u+x "$HOME/bin/solc"
+            export PATH=$HOME/bin:$PATH
+            solc --version
+      - name: Install geth
+        run: |
+            mkdir -p "$HOME/bin"
+            wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.9.23-8c2f2715.tar.gz
+            tar -xvf geth-linux-amd64-1.9.23-8c2f2715.tar.gz
+            mv geth-linux-amd64-1.9.23-8c2f2715/geth $HOME/bin/geth
+            chmod u+x "$HOME/bin/geth"
+            export PATH=$HOME/bin:$PATH
+            geth version
+
+      - name: Install libusb (for Ledger)
+        run: sudo apt update && sudo apt install pkg-config libudev-dev
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v1
+        with:
+          cache-on-failure: true
+      - name: cargo test (Celo)
+        run: |
+            export PATH=$HOME/bin:$PATH
+            cargo test --all-features
+
+  lint:
+    name: lints
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          profile: minimal
+          components: rustfmt, clippy
+          override: true
+      - name: Install Dependencies
+        run: sudo apt-get install libudev-dev
+      - uses: Swatinem/rust-cache@v1
+        with:
+          cache-on-failure: true
+      - name: cargo fmt
+        run: cargo +nightly fmt --all -- --check
+      - name: cargo clippy
+        run: cargo +nightly clippy --all --all-features -- -D warnings
+
+  wasm:
+    name: WASM
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - name: Install rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+          profile: minimal
+          override: true
+
+      - uses: Swatinem/rust-cache@v1
+        with:
+          cache-on-failure: true
+
+      - name: Check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --target wasm32-unknown-unknown
+
+      - name: Launch Ganache
+        run: |
+          cd examples/ethers-wasm
+          npm install
+          npm run ganache &
+
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Wasm-pack test firefox
+        run: |
+          cd examples/ethers-wasm
+          wasm-pack test --headless --firefox
+
+      - name: Wasm-pack test chrome
+        run: |
+          cd examples/ethers-wasm
+          wasm-pack test --headless --chrome
+
+  examples:
+    name: Examples
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Install ganache-cli
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - name: Install ganache
+        run: npm install -g ganache-cli
+      - name: Install Solc
+        run: |
+            mkdir -p "$HOME/bin"
+            wget -q https://github.com/ethereum/solidity/releases/download/v0.6.6/solc-static-linux -O $HOME/bin/solc
+            chmod u+x "$HOME/bin/solc"
+            export PATH=$HOME/bin:$PATH
+            solc --version
+
+      - name: Install geth
+        run: |
+            mkdir -p "$HOME/bin"
+            wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.9.23-8c2f2715.tar.gz
+            tar -xvf geth-linux-amd64-1.9.23-8c2f2715.tar.gz
+            mv geth-linux-amd64-1.9.23-8c2f2715/geth $HOME/bin/geth
+            chmod u+x "$HOME/bin/geth"
+            export PATH=$HOME/bin:$PATH
+            geth version
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v1
+        with:
+          cache-on-failure: true
+      - name: cargo test
+        run: |
+            export PATH=$HOME/bin:$PATH
+            ./scripts/examples.sh
