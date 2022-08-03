@@ -33,7 +33,7 @@ version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0b613b8e1e3cf911a086f53f03bf286f52fd7a7258e4fa606f0ef220d39d8877"
 dependencies = [
- "generic-array 0.14.4",
+ "generic-array 0.14.6",
  "rand_core 0.6.3",
 ]
 
@@ -284,7 +284,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4152116fd6e9dadb291ae18fc1ec3575ed6d84c29642d97890f4b4a3417297e4"
 dependencies = [
  "block-padding 0.2.1",
- "generic-array 0.14.4",
+ "generic-array 0.14.6",
 ]
 
 [[package]]
@@ -432,7 +432,7 @@ version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7ee52072ec15386f770805afd189a01c8841be8696bed250fa2f13c4c0d6dfb7"
 dependencies = [
- "generic-array 0.14.4",
+ "generic-array 0.14.6",
 ]
 
 [[package]]
@@ -502,7 +502,7 @@ dependencies = [
  "bech32",
  "blake2",
  "digest 0.9.0",
- "generic-array 0.14.4",
+ "generic-array 0.14.6",
  "hex",
  "ripemd160",
  "serde",
@@ -645,7 +645,7 @@ version = "0.2.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d12477e115c0d570c12a2dfd859f80b55b60ddb5075df210d3af06d133a69f45"
 dependencies = [
- "generic-array 0.14.4",
+ "generic-array 0.14.6",
  "rand_core 0.6.3",
  "subtle",
  "zeroize",
@@ -657,7 +657,7 @@ version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "03c6a1d5fa1de37e071642dfa44ec552ca5b299adb128fab16138e24b548fd21"
 dependencies = [
- "generic-array 0.14.4",
+ "generic-array 0.14.6",
  "rand_core 0.6.3",
  "subtle",
  "zeroize",
@@ -669,7 +669,7 @@ version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b584a330336237c1eecd3e94266efb216c56ed91225d634cb2991c5f3fd1aeab"
 dependencies = [
- "generic-array 0.14.4",
+ "generic-array 0.14.6",
  "subtle",
 ]
 
@@ -680,7 +680,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b1d1a86f49236c215f271d40892d5fc950490551400b02ef360692c29815c714"
 dependencies = [
  "cipher",
- "generic-array 0.14.4",
+ "generic-array 0.14.6",
  "subtle",
 ]
 
@@ -721,7 +721,7 @@ version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "37e797687b5f09528a48fcb63b6914d0255b8a6c760699a919af37042f09d9b3"
 dependencies = [
- "generic-array 0.14.4",
+ "generic-array 0.14.6",
 ]
 
 [[package]]
@@ -769,7 +769,7 @@ version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d3dd60d1080a57a05ab032377049e0591415d2b31afd7028356dbf3cc6dcb066"
 dependencies = [
- "generic-array 0.14.4",
+ "generic-array 0.14.6",
 ]
 
 [[package]]
@@ -842,7 +842,7 @@ checksum = "beca177dcb8eb540133e7680baff45e7cc4d93bf22002676cec549f82343721b"
 dependencies = [
  "crypto-bigint 0.2.10",
  "ff",
- "generic-array 0.14.4",
+ "generic-array 0.14.6",
  "group",
  "pkcs8",
  "rand_core 0.6.3",
@@ -858,7 +858,7 @@ checksum = "f73d21281779c2c22cade2a4ab34eee34271869942546a364f7d552d30c62434"
 dependencies = [
  "crypto-bigint 0.3.2",
  "der 0.5.1",
- "generic-array 0.14.4",
+ "generic-array 0.14.6",
  "rand_core 0.6.3",
  "subtle",
  "zeroize",
@@ -1032,7 +1032,7 @@ dependencies = [
  "elliptic-curve 0.11.1",
  "ethabi",
  "futures-util",
- "generic-array 0.14.4",
+ "generic-array 0.14.6",
  "hex",
  "hex-literal",
  "k256",
@@ -1369,9 +1369,9 @@ dependencies = [
 
 [[package]]
 name = "generic-array"
-version = "0.14.4"
+version = "0.14.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "501466ecc8a30d1d3b7fc9229b122b2ce8ed6e9d9223f1138d4babb253e51817"
+checksum = "bff49e947297f3312447abdca79f45f4738097cc82b06e72054d2223f601f1b9"
 dependencies = [
  "typenum",
  "version_check",
